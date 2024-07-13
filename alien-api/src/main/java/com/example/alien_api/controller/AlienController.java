@@ -15,6 +15,10 @@ public class AlienController {
     @Autowired
     private AlienService alienService;
 
+    // API to add a new alien
+    // POST /api/newAlien
+    // Request Body: Alien object
+    // Returns: ResponseEntity with the added Alien object or error message
     @PostMapping("/newAlien")
     public ResponseEntity<Object> addNewAlien(@RequestBody Alien alien) {
         try {
@@ -25,6 +29,9 @@ public class AlienController {
         }
     }
 
+    // API to get all aliens
+    // GET /api/getAll
+    // Returns: ResponseEntity with a list of all Alien objects
     @GetMapping("/getAll")
     public ResponseEntity<List<Alien>> getAllAliens() {
         List<Alien> aliens = alienService.getAllAliens();

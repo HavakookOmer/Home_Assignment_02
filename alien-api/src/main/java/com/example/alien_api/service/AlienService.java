@@ -1,11 +1,15 @@
 package com.example.alien_api.service;
 
-import com.example.alien_api.model.*;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.springframework.stereotype.Service;
+
+import com.example.alien_api.model.Alien;
+import com.example.alien_api.model.AlienChiefCommander;
+import com.example.alien_api.model.AlienCommander;
+import com.example.alien_api.model.AlienWarrior;
 
 @Service
 public class AlienService {
@@ -13,19 +17,10 @@ public class AlienService {
     private final AtomicLong idCounter = new AtomicLong();
 
     public Alien addAlien(Alien alien) {
-        if (alien instanceof AlienChiefCommander) {
-            validateAlienChiefCommander((AlienChiefCommander) alien);
-        } else if (alien instanceof AlienCommander) {
-            validateAlienCommander((AlienCommander) alien);
-        } else if (alien instanceof AlienWarrior) {
-            validateAlienWarrior((AlienWarrior) alien);
-        } else {
-            throw new IllegalArgumentException("Unknown alien type.");
-        }
-
+        validateAlien(alien);
         alien.setId(idCounter.incrementAndGet());
         aliens.add(alien);
-        
+
         if (alien.getCommanderId() != null) {
             boolean commanderFound = false;
             for (Alien existingAlien : aliens) {
@@ -47,6 +42,18 @@ public class AlienService {
         return aliens;
     }
 
+    private void validateAlien(Alien alien) {
+        if (alien instanceof AlienChiefCommander) {
+            validateAlienChiefCommander((AlienChiefCommander) alien);
+        } else if (alien instanceof AlienCommander) {
+            validateAlienCommander((AlienCommander) alien);
+        } else if (alien instanceof AlienWarrior) {
+            validateAlienWarrior((AlienWarrior) alien);
+        } else {
+            throw new IllegalArgumentException("Unknown alien type.");
+        }
+    }
+
     private void validateAlienChiefCommander(AlienChiefCommander chiefCommander) {
         if (chiefCommander.getCommanderId() != null) {
             throw new IllegalArgumentException("Commander ID should be null for AlienChiefCommander.");
@@ -55,36 +62,36 @@ public class AlienService {
 
     private void validateAlienCommander(AlienCommander commander) {
         if (commander.getCommanderId() == null || commander.getCommanderId() <= 0) {
-            throw new IllegalArgumentException("Commander ID is required and should be a positive number for AlienCommander.");
+            throw new IllegalArgumentException(
+                    "Commander ID is required and should be a positive number for AlienCommander.");
         }
-        
-        int subordinateCount = 0;
-        for (Alien alien : aliens) {
-            if (alien instanceof AlienCommander && alien.getCommanderId() != null && alien.getCommanderId().equals(commander.getCommanderId())) {
-                subordinateCount++;
-            }
+
+        Alien commanderParent = commander.getCommanderId() != null ? aliens.stream()
+                .filter(alien -> alien.getId().equals(commander.getCommanderId())).findFirst().orElse(null) : null;
+
+        if (commanderParent == null || !(commanderParent instanceof AlienChiefCommander)) {
+            throw new IllegalArgumentException("AlienCommander should have a Chief Commander as parent.");
         }
-        
-        if (subordinateCount >= 10) {
-            throw new IllegalArgumentException("Cannot add more than 10 warriors to a commander.");
+        if (commanderParent != null && commanderParent.getSubordinates().size() >= 3) {
+            throw new IllegalArgumentException("Cannot add more than 3 commanders to a Chief Commander.");
         }
+
     }
 
     private void validateAlienWarrior(AlienWarrior warrior) {
         if (warrior.getCommanderId() == null || warrior.getCommanderId() <= 0) {
-            throw new IllegalArgumentException("Commander ID is required and should be a positive number for AlienWarrior.");
+            throw new IllegalArgumentException(
+                    "Commander ID is required and should be a positive number for AlienWarrior.");
         }
 
-        boolean commanderFound = false;
-        for (Alien alien : aliens) {
-            if (alien.getId().equals(warrior.getCommanderId()) && alien instanceof AlienCommander) {
-                commanderFound = true;
-                break;
-            }
-        }
+        Alien warriorCommander = warrior.getCommanderId() != null ? aliens.stream()
+                .filter(alien -> alien.getId().equals(warrior.getCommanderId())).findFirst().orElse(null) : null;
 
-        if (!commanderFound) {
-            throw new IllegalArgumentException("Commander with ID " + warrior.getCommanderId() + " not found or is not an AlienCommander.");
+        if (warriorCommander == null || !(warriorCommander instanceof AlienCommander)) {
+            throw new IllegalArgumentException("AlienCommander should have a Chief Commander as parent.");
+        }
+        if (warriorCommander != null && warriorCommander.getSubordinates().size() >= 10) {
+            throw new IllegalArgumentException("Cannot add more than 3 commanders to a Chief Commander.");
         }
     }
 }

@@ -6,15 +6,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonTypeInfo(
-  use = JsonTypeInfo.Id.NAME,
-  include = JsonTypeInfo.As.PROPERTY,
-  property = "type"
-)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-  @JsonSubTypes.Type(value = AlienWarrior.class, name = "warrior"),
-  @JsonSubTypes.Type(value = AlienCommander.class, name = "commander"),
-  @JsonSubTypes.Type(value = AlienChiefCommander.class, name = "chief_commander")
+        @JsonSubTypes.Type(value = AlienWarrior.class, name = "warrior"),
+        @JsonSubTypes.Type(value = AlienCommander.class, name = "commander"),
+        @JsonSubTypes.Type(value = AlienChiefCommander.class, name = "chief_commander")
 })
 public abstract class Alien {
 
@@ -22,8 +18,6 @@ public abstract class Alien {
     private String name;
     private Long commanderId;
     private List<Alien> subordinates = new ArrayList<>();
-
-    // Getters and setters
 
     public Long getId() {
         return id;

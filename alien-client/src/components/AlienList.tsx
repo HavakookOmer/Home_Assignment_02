@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import ChiefLogo from "../icons/chief-commander.png";
 import CommanderLogo from "../icons/commander.png";
 import WarriorLogo from "../icons/alien.png";
@@ -27,7 +27,6 @@ const AlienList: React.FC = () => {
 
   const fetchAliens = async () => {
     try {
-      console.log("Fetching aliens...");
       const response = await axios.get("http://localhost:8080/api/getAll");
       setAliens(response.data);
       window.localStorage.setItem("aliens", JSON.stringify(response.data));
@@ -63,9 +62,11 @@ const AlienList: React.FC = () => {
       setIsModalOpen(false);
       fetchAliens();
     } catch (error) {
-      console.error("Error adding alien:", error);
-      if ((error as any).response && (error as any).response.status === 400) {
-        alert("Error adding alien: Bad request");
+      if (
+        (error as AxiosError).response &&
+        (error as AxiosError).response?.status === 400
+      ) {
+        alert((error as AxiosError).response?.data);
       } else {
         alert("Error adding alien: Please try again later");
       }
@@ -73,8 +74,6 @@ const AlienList: React.FC = () => {
   };
 
   const getIconPath = (type: string) => {
-    console.log(type);
-
     switch (type) {
       case "chief_commander":
         return ChiefLogo;

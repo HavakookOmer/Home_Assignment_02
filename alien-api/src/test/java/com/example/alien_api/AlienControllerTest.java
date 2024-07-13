@@ -37,12 +37,10 @@ public class AlienControllerTest {
         aliens.clear(); // Clear the list before each test
     }
 
-
     @Test
     public void addAlienWarrior_WithoutCommanderId_ShouldReturnBadRequest() throws Exception {
         AlienWarrior alienWarrior = new AlienWarrior();
         alienWarrior.setName("Alien Warrior 1");
-        // Missing commanderId intentionally
 
         mockMvc.perform(post("/api/newAlien")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -50,6 +48,64 @@ public class AlienControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void addAlienCommander_WithExceededSubordinates_ShouldReturnBadRequest() throws Exception {
+        AlienChiefCommander chiefCommander = new AlienChiefCommander();
+        chiefCommander.setName("Chief Commander 1");
+        alienService.addAlien(chiefCommander);
+
+        AlienCommander commander1 = new AlienCommander();
+        commander1.setName("Commander 1");
+        commander1.setCommanderId(chiefCommander.getId());
+        alienService.addAlien(commander1);
+
+        AlienCommander commander2 = new AlienCommander();
+        commander2.setName("Commander 2");
+        commander2.setCommanderId(chiefCommander.getId());
+        alienService.addAlien(commander2);
+
+        AlienCommander commander3 = new AlienCommander();
+        commander3.setName("Commander 3");
+        commander3.setCommanderId(chiefCommander.getId());
+        alienService.addAlien(commander3);
+
+        AlienCommander newCommander = new AlienCommander();
+        newCommander.setName("new commander");
+        newCommander.setCommanderId(chiefCommander.getId());
+
+        mockMvc.perform(post("/api/newAlien")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newCommander)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void addAlienWarrior_WithExceededSubordinates_ShouldReturnBadRequest() throws Exception {
+        AlienChiefCommander chiefCommander = new AlienChiefCommander();
+        chiefCommander.setName("Chief Commander 1");
+        alienService.addAlien(chiefCommander);
+
+        AlienCommander commander = new AlienCommander();
+        commander.setName("Commander 1");
+        commander.setCommanderId(chiefCommander.getId());
+        alienService.addAlien(commander);
+
+        for (int i = 0; i < 10; i++) {
+            AlienWarrior alienWarrior = new AlienWarrior();
+            alienWarrior.setName("Alien Warrior " + i);
+            alienWarrior.setCommanderId(commander.getId());
+            alienService.addAlien(alienWarrior);
+        }
+
+        AlienWarrior newwWarrior = new AlienWarrior();
+        newwWarrior.setName("New Alien Warrior");
+        newwWarrior.setCommanderId(commander.getId());
+
+        mockMvc.perform(post("/api/newAlien")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newwWarrior)))
+                .andExpect(status().isBadRequest());
+    }
 
     @Test
     public void getAllAliens_ShouldReturnEmptyList() throws Exception {

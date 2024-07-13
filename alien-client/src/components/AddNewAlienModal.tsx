@@ -13,7 +13,8 @@ const AddNewAlienModal: React.FC<AddNewAlienModalProps> = ({
   aliens,
 }) => {
   const [newAlien, setNewAlien] = useState<PartialAlien>({ type: "warrior" });
-  const [error, setError] = useState("");
+  const [commanderError, setCommanderError] = useState("");
+  const [nameError, setNameError] = useState("");
   const [commanders, setCommanders] = useState<Alien[]>([]);
 
   useEffect(() => {
@@ -26,11 +27,11 @@ const AddNewAlienModal: React.FC<AddNewAlienModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newAlien.name) {
-      setError("Name is required");
+      setNameError("Name is required");
       return;
     }
     if (!newAlien.commanderId && newAlien.type !== "chief_commander") {
-      setError("Commander is required");
+      setCommanderError("Commander is required");
       return;
     }
 
@@ -92,14 +93,13 @@ const AddNewAlienModal: React.FC<AddNewAlienModalProps> = ({
                   id="alien-name"
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5"
                   placeholder="Alien Name"
-                  required
                   value={newAlien.name || ""}
                   onChange={(e) =>
                     setNewAlien({ ...newAlien, name: e.target.value })
                   }
                 />
-                {error && !newAlien.name && (
-                  <p className="text-red-500 text-sm mt-1">{error}</p>
+                {nameError && !newAlien.name && (
+                  <p className="text-red-500 text-sm mt-1">{nameError}</p>
                 )}
               </div>
               <div className="col-span-6 sm:col-span-3">
@@ -204,9 +204,10 @@ const AddNewAlienModal: React.FC<AddNewAlienModalProps> = ({
                       </option>
                     ))}
                   </select>
-
-                  {error && !newAlien.commanderId && (
-                    <p className="text-red-500 text-sm mt-1">{error}</p>
+                  {commanderError && !newAlien.commanderId && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {commanderError}
+                    </p>
                   )}
                 </div>
               )}
