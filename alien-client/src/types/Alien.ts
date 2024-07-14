@@ -1,16 +1,29 @@
 // Weapon enum
 export enum Weapon {
-    WATER_GUN = "Water gun",
-    PEPPER_SPRAY = "Pepper spray",
-    CHOPSTICKS = "Chopsticks",
+    WATER_GUN,
+    PEPPER_SPRAY, 
+    CHOPSTICKS
   }
   
   // Vehicle enum
   export enum Vehicle {
-    BIRD_SCOOTER = "Bird scooter",
-    MERKAVA_TANK = "Merkava tank",
-    EGGED_BUS = "Egged Bus",
+    BIRD_SCOOTER,
+    MERKAVA_TANK,
+    EGGED_BUS 
   }
+
+  // Mappings
+export const WeaponDisplayNames: Record<string, string> = {
+  "WATER_GUN": "Water Gun",
+  "PEPPER_SPRAY": "Pepper Spray",
+  "CHOPSTICKS": "Chopsticks"
+};
+
+export const VehicleDisplayNames: Record<string, string> = {
+  "BIRD_SCOOTER": "Bird Scooter",
+  "MERKAVA_TANK": "Merkava Tank",
+  "EGGED_BUS": "Egged Bus"
+};
   
   // Alien interface
   export interface Alien {

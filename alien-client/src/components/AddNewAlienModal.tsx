@@ -12,7 +12,7 @@ const AddNewAlienModal: React.FC<AddNewAlienModalProps> = ({
   closeModal,
   aliens,
 }) => {
-  const [newAlien, setNewAlien] = useState<PartialAlien>({ type: "warrior" });
+  const [newAlien, setNewAlien] = useState<PartialAlien>({ type: "warrior" , weapon: Weapon.WATER_GUN, vehicle: Vehicle.BIRD_SCOOTER });
   const [commanderError, setCommanderError] = useState("");
   const [nameError, setNameError] = useState("");
   const [commanders, setCommanders] = useState<Alien[]>([]);
@@ -139,7 +139,7 @@ const AddNewAlienModal: React.FC<AddNewAlienModalProps> = ({
                     onChange={(e) =>
                       setNewAlien({
                         ...newAlien,
-                        weapon: e.target.value as Weapon,
+                        weapon: e.target.value as unknown as Weapon,
                       })
                     }
                   >
@@ -165,7 +165,7 @@ const AddNewAlienModal: React.FC<AddNewAlienModalProps> = ({
                     onChange={(e) =>
                       setNewAlien({
                         ...newAlien,
-                        vehicle: e.target.value as Vehicle,
+                        vehicle: e.target.value as unknown as Vehicle,
                       })
                     }
                   >

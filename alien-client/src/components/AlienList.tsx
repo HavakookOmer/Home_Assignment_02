@@ -4,7 +4,7 @@ import ChiefLogo from "../icons/chief-commander.png";
 import CommanderLogo from "../icons/commander.png";
 import WarriorLogo from "../icons/alien.png";
 import AddNewAlienModal from "./AddNewAlienModal";
-import { Alien, Vehicle, Weapon } from "../types/Alien";
+import { Alien, Vehicle, VehicleDisplayNames, Weapon, WeaponDisplayNames } from "../types/Alien";
 
 const AlienList: React.FC = () => {
   const [aliens, setAliens] = useState<Alien[]>([]);
@@ -39,21 +39,13 @@ const AlienList: React.FC = () => {
   };
 
   const addAlien = async (newAlien: Partial<Alien>) => {
-    try {
+    try {     
       const { data } = await axios.post<Alien>(
         "http://localhost:8080/api/newAlien",
         {
           ...newAlien,
-          weapon: newAlien.weapon
-            ? (Weapon[
-                newAlien.weapon as unknown as keyof typeof Weapon
-              ] as Weapon)
-            : undefined,
-          vehicle: newAlien.vehicle
-            ? (Vehicle[
-                newAlien.vehicle as unknown as keyof typeof Vehicle
-              ] as Vehicle)
-            : undefined,
+          weapon: Weapon[newAlien.weapon as Weapon],
+          vehicle: Vehicle[newAlien.vehicle as Vehicle],
         }
       );
       const updatedAliens = [...aliens, data];
@@ -88,7 +80,8 @@ const AlienList: React.FC = () => {
 
   const TableRows: React.FC<{ data: Alien }> = ({ data }) => {
     const [open, setOpen] = useState(false);
-
+    console.log(data.weapon);
+    
     return (
       <>
         <tr className="cursor-pointer">
@@ -122,14 +115,16 @@ const AlienList: React.FC = () => {
                 alt={data.type}
                 className="w-6 h-6 rounded-full mr-2"
               />
-              {data?.type}
+              {data?.type}  
             </div>
           </td>
           <td className="py-2 px-3 font-normal text-base border-t whitespace-nowrap">
             {data?.name}
           </td>
           <td className="py-2 px-3 text-base font-normal border-t whitespace-nowrap">
-            {data?.weapon || data?.vehicle || "N/A"}
+            {
+              data.weapon ? WeaponDisplayNames[data.weapon] : data.vehicle ? VehicleDisplayNames[data.vehicle] : "N/A"
+            }
           </td>
         </tr>
         <td colSpan={4} className="pl-20 w-[48rem]">
