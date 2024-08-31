@@ -24,8 +24,8 @@ The system allows users to add, view, and manage records of different types of a
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/alien-documentation-system.git
-   cd alien-documentation-system
+   git clone https://github.com/yourusername/Home_Assignment_02.git
+   cd Home_Assignment_02
   
 2. **Run the backend**:
    ```bash
