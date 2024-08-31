@@ -33,7 +33,6 @@ export const VehicleDisplayNames: Record<string, string> = {
     weapon?: Weapon;
     vehicle?: Vehicle;
     commanderId?: number;
-    subordinates?: Alien[];
   }
 
   export interface PartialAlien {
@@ -42,6 +41,5 @@ export const VehicleDisplayNames: Record<string, string> = {
     weapon?: Weapon;
     vehicle?: Vehicle;
     commanderId?: number;
-    subordinates?: Alien[];
   }
   

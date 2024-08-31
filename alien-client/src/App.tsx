@@ -1,11 +1,11 @@
 import React, {  } from "react";
-import AlienList from "./components/AlienList";
+import AliensPage from "./pages/AliensPage";
 
 
 const App: React.FC = () => {
   return (
-    <div className="App">
-      <AlienList />
+    <div className="max-w-7xl mx-auto">
+      <AliensPage />
     </div>
   );
 };
